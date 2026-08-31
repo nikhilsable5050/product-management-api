@@ -27,10 +27,23 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
+    public RefreshToken findByToken(String token) {
+
+        return refreshTokenRepository.findByToken(token)
+                .orElseThrow(() ->
+                        new RuntimeException("Refresh token not found"));
+    }
+
     public boolean isValid(RefreshToken refreshToken) {
 
         return !refreshToken.isRevoked()
                 && refreshToken.getExpiresAt()
                 .isAfter(LocalDateTime.now());
+    }
+
+    public void revokeToken(RefreshToken refreshToken) {
+
+        refreshToken.setRevoked(true);
+        refreshTokenRepository.save(refreshToken);
     }
 }
