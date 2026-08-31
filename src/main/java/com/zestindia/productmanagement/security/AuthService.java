@@ -54,4 +54,29 @@ public class AuthService {
                 refreshToken.getToken()
         );
     }
+
+    public AuthResponse refreshToken(String token) {
+
+        RefreshToken refreshToken =
+                refreshTokenService.findByToken(token);
+
+        if (!refreshTokenService.isValid(refreshToken)) {
+            throw new RuntimeException("Refresh token is expired or revoked");
+        }
+
+        User user = refreshToken.getUser();
+
+        String accessToken =
+                jwtService.generateToken(user.getUsername());
+
+        refreshTokenService.revokeToken(refreshToken);
+
+        RefreshToken newRefreshToken =
+                refreshTokenService.createRefreshToken(user);
+
+        return new AuthResponse(
+                accessToken,
+                newRefreshToken.getToken()
+        );
+    }
 }
