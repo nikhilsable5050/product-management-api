@@ -2,6 +2,7 @@ package com.zestindia.productmanagement.security;
 
 import com.zestindia.productmanagement.dto.AuthResponse;
 import com.zestindia.productmanagement.dto.LoginRequest;
+import com.zestindia.productmanagement.entity.RefreshToken;
 import com.zestindia.productmanagement.entity.Role;
 import com.zestindia.productmanagement.entity.User;
 import com.zestindia.productmanagement.repository.UserRepository;
@@ -16,6 +17,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     public void register(String username, String password) {
 
@@ -44,6 +46,12 @@ public class AuthService {
         String accessToken =
                 jwtService.generateToken(user.getUsername());
 
-        return new AuthResponse(accessToken, null);
+        RefreshToken refreshToken =
+                refreshTokenService.createRefreshToken(user);
+
+        return new AuthResponse(
+                accessToken,
+                refreshToken.getToken()
+        );
     }
 }
