@@ -1,11 +1,17 @@
 package com.zestindia.productmanagement.entity;
 
+import jakarta.persistence.Index;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "item")
+@Table(
+        name = "item",
+        indexes = {
+                @Index(name = "idx_item_product_id", columnList = "product_id")
+        }
+)
 @Getter
 @Setter
 public class Item {
