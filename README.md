@@ -304,6 +304,7 @@ The API returns structured error responses containing:
 status
 message
 timestamp
+
 Project Structure
 product-management-api/
 │
@@ -386,6 +387,7 @@ DELETE /api/v1/products/{id}
 Items
 POST /api/v1/products/{productId}/items
 GET  /api/v1/products/{productId}/items
-Author
 
+
+Author
 Nikhil Sable
