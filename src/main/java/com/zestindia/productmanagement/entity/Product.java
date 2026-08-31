@@ -1,5 +1,6 @@
 package com.zestindia.productmanagement.entity;
 
+import jakarta.persistence.Index;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +8,12 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "product")
+@Table(
+        name = "product",
+        indexes = {
+                @Index(name = "idx_product_name", columnList = "product_name")
+        }
+)
 @Getter
 @Setter
 public class Product {
