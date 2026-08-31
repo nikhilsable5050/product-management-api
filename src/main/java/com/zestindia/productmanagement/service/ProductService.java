@@ -6,6 +6,8 @@ import com.zestindia.productmanagement.dto.ProductResponse;
 import com.zestindia.productmanagement.entity.Product;
 import com.zestindia.productmanagement.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,12 +32,10 @@ public class ProductService {
         return mapToResponse(savedProduct);
     }
 
-    public List<ProductResponse> getAllProducts() {
+        public Page<ProductResponse> getAllProducts(Pageable pageable) {
 
-        return productRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
+        return productRepository.findAll(pageable)
+                .map(this::mapToResponse);
     }
 
     public ProductResponse getProductById(Long id) {
