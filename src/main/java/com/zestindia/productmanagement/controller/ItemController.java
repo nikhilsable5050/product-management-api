@@ -1,5 +1,8 @@
 package com.zestindia.productmanagement.controller;
 
+import com.zestindia.productmanagement.dto.ItemRequest;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import com.zestindia.productmanagement.dto.ItemResponse;
 import com.zestindia.productmanagement.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +25,15 @@ public class ItemController {
         return ResponseEntity.ok(
                 itemService.getItemsByProductId(productId)
         );
+    }
+
+    @PostMapping("/{productId}/items")
+    public ResponseEntity<ItemResponse> createItem(
+            @PathVariable Long productId,
+            @Valid @RequestBody ItemRequest request) {
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(itemService.createItem(productId, request));
     }
 }
