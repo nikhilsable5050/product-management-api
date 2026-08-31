@@ -1,5 +1,6 @@
 package com.zestindia.productmanagement.service;
 
+import com.zestindia.productmanagement.exception.ProductNotFoundException;
 import com.zestindia.productmanagement.dto.ProductRequest;
 import com.zestindia.productmanagement.dto.ProductResponse;
 import com.zestindia.productmanagement.entity.Product;
@@ -40,7 +41,7 @@ public class ProductService {
     public ProductResponse getProductById(Long id) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         return mapToResponse(product);
     }
@@ -48,7 +49,7 @@ public class ProductService {
     public ProductResponse updateProduct(Long id, ProductRequest request) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         product.setProductName(request.getProductName());
         product.setModifiedBy("SYSTEM");
@@ -62,7 +63,7 @@ public class ProductService {
     public void deleteProduct(Long id) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         productRepository.delete(product);
     }
