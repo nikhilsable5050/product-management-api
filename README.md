@@ -12,6 +12,9 @@ A RESTful Product Management API built using Spring Boot, Spring Security, JWT a
 - Spring Security
 - JWT Authentication
 - PostgreSQL
+- H2 In-Memory Database for Testing
+- JUnit 5
+- Mockito
 - Maven
 - Docker
 - Docker Compose
@@ -52,9 +55,18 @@ A RESTful Product Management API built using Spring Boot, Spring Security, JWT a
 - Swagger UI
 - OpenAPI documentation
 
+### Testing
+
+- Unit testing using JUnit 5 and Mockito
+- Controller testing using Spring Boot Test
+- H2 in-memory database for test environment
+- Service layer testing
+- Controller layer testing
+- Validation and exception scenario testing
+
 ---
 
-## Architecture
+# Architecture
 
 The application follows a layered architecture.
 
@@ -84,6 +96,13 @@ Examples:
 Authentication requests
 Product requests
 Item requests
+
+Controllers are responsible for:
+
+Receiving API requests
+Request validation
+Calling service methods
+Returning appropriate HTTP responses
 Service Layer
 
 Contains the application's business logic.
@@ -91,13 +110,21 @@ Contains the application's business logic.
 The service layer:
 
 Processes requests
-Performs validations/business rules
+Performs business rules
 Communicates with repositories
 Converts entities to DTOs
+Handles product and item operations
 Repository Layer
 
 Uses Spring Data JPA and JpaRepository to communicate with PostgreSQL.
 
+Repositories are responsible for:
+
+Saving data
+Retrieving data
+Updating data
+Deleting data
+Custom database queries
 Entity Layer
 
 Contains JPA entities representing database tables.
@@ -108,6 +135,9 @@ User
 Product
 Item
 RefreshToken
+
+Entities are mapped to PostgreSQL database tables using JPA annotations.
+
 DTO Layer
 
 DTOs are used to control the data sent to and received from the API.
@@ -119,7 +149,7 @@ ProductResponse
 ItemRequest
 ItemResponse
 
-This prevents database entities from being directly exposed through the API.
+DTOs prevent database entities from being directly exposed through the API.
 
 Security Layer
 
@@ -162,11 +192,8 @@ The application supports the following roles:
 
 USER
 ADMIN
-Product APIs
 
-Authenticated users with appropriate roles can access product APIs.
-
-Admin APIs
+Product APIs are protected using authentication and appropriate authorization rules.
 
 Admin APIs require the ADMIN role.
 
@@ -178,17 +205,23 @@ After starting the application, Swagger UI is available at:
 
 http://localhost:8080/swagger-ui/index.html
 
-Swagger can be used to test the APIs directly from the browser.
+Swagger can be used to:
 
+View API documentation
+View request and response models
+Authenticate using JWT
+Test API endpoints directly from the browser
 Running the Application
 Prerequisites
 
 Install the following:
 
 Java 21
-Maven
 Docker Desktop
 Git
+
+Maven Wrapper is included in the project, so Maven does not need to be installed separately.
+
 Run Using Docker Compose
 
 The recommended way to run the complete application is using Docker Compose.
@@ -281,18 +314,24 @@ Validation
 
 The application uses Jakarta Bean Validation for request validation.
 
-Examples:
-
 Product
+
+Validation includes:
+
 Product name is required
 Product name cannot be blank
 Product name cannot exceed 255 characters
 Item
+
+Validation includes:
+
 Quantity is required
 Quantity must be at least 1
 Exception Handling
 
-The application uses a global exception handler with @RestControllerAdvice.
+The application uses a global exception handler with:
+
+@RestControllerAdvice
 
 Handled errors include:
 
@@ -304,35 +343,151 @@ The API returns structured error responses containing:
 status
 message
 timestamp
+Testing
 
+The project includes automated tests to verify the application functionality.
+
+Testing Technologies
+
+The following testing technologies are used:
+
+JUnit 5
+Mockito
+Spring Boot Test
+H2 In-Memory Database
+Unit Testing
+
+JUnit 5 and Mockito are used for unit-level testing.
+
+Mockito is used to mock dependencies such as service and repository dependencies where required.
+
+The tests verify application logic without depending on the production PostgreSQL database.
+
+Integration / Spring Boot Testing
+
+Spring Boot Test is used for testing Spring application components and application behavior.
+
+The test environment uses an H2 in-memory database instead of the production PostgreSQL database.
+
+Test database configuration:
+
+Database: H2
+Mode: In-Memory
+Database Name: testdb
+
+The H2 database is automatically created and removed during testing.
+
+Controller Testing
+
+Controller endpoints are tested using Spring Boot's web testing support and MockMvc.
+
+The controller tests cover:
+
+Create product
+Get product by ID
+Product not found scenario
+Get all products with pagination
+Update product
+Delete product
+Service Testing
+
+Service layer tests cover product and item business operations.
+
+The tests verify scenarios such as:
+
+Creating products
+Retrieving products
+Updating products
+Deleting products
+Handling product-not-found cases
+Creating items
+Retrieving items by product
+Test Configuration
+
+The test environment uses a separate H2 database configuration.
+
+Production:
+
+PostgreSQL
+
+Tests:
+
+H2 In-Memory Database
+
+This keeps automated tests independent from the production database.
+
+Test Results
+
+The complete automated test suite was executed successfully.
+
+Tests run: 17
+Failures: 0
+Errors: 0
+Skipped: 0
+
+BUILD SUCCESS
+
+Controller tests:
+
+Tests run: 6
+Failures: 0
+Errors: 0
+Skipped: 0
+
+The complete test suite therefore passes successfully with no failures or errors.
+
+Run Tests
+
+To run all tests using Maven Wrapper:
+
+Windows
+.\mvnw.cmd clean test
+Linux / macOS
+./mvnw clean test
+
+A successful execution should end with:
+
+BUILD SUCCESS
 Project Structure
 product-management-api/
 │
 ├── src/
-│   └── main/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── zestindia/
+│   │   │           └── productmanagement/
+│   │   │               │
+│   │   │               ├── config/
+│   │   │               │
+│   │   │               ├── controller/
+│   │   │               │
+│   │   │               ├── dto/
+│   │   │               │
+│   │   │               ├── entity/
+│   │   │               │
+│   │   │               ├── exception/
+│   │   │               │
+│   │   │               ├── repository/
+│   │   │               │
+│   │   │               ├── security/
+│   │   │               │
+│   │   │               └── service/
+│   │   │
+│   │   └── resources/
+│   │       └── application.properties
+│   │
+│   └── test/
 │       ├── java/
 │       │   └── com/
 │       │       └── zestindia/
 │       │           └── productmanagement/
 │       │               │
-│       │               ├── config/
-│       │               │
 │       │               ├── controller/
-│       │               │
-│       │               ├── dto/
-│       │               │
-│       │               ├── entity/
-│       │               │
-│       │               ├── exception/
-│       │               │
-│       │               ├── repository/
-│       │               │
-│       │               ├── security/
-│       │               │
 │       │               └── service/
 │       │
 │       └── resources/
-│           └── application.properties
+│           └── application-test.properties
 │
 ├── Dockerfile
 ├── docker-compose.yml
@@ -387,6 +542,23 @@ DELETE /api/v1/products/{id}
 Items
 POST /api/v1/products/{productId}/items
 GET  /api/v1/products/{productId}/items
+Assignment Requirements
+
+The project includes the required assignment deliverables:
+
+Public GitHub repository
+Complete source code
+Proper project structure
+README.md
+Setup instructions
+Architecture explanation
+Dockerfile
+docker-compose.yml
+JUnit 5 testing
+Mockito testing
+Spring Boot testing
+H2 in-memory database for tests
+Service and controller test coverage
 
 
 Author
